@@ -125,3 +125,56 @@
    2) *: 表示任意的0个或者多个字符
    3) **: 表示任意的0层或多层目录
       注意: 在使用**时，只能使用/**/xxx的方式
+
+5. SpringMVC支持路径中的占位符
+   - 原始方式: /deleteUser?id=1
+   - rest方式： /deleteUser/1
+
+     @RequestMapping("/testPath/{id}/{username}")
+     public String testPath(@PathVariable("id") Integer id, @PathVariable("username") String username) {
+       System.out.println("id = " + id);
+       System.out.println("username = " + username);
+       return "success";
+     }
+
+6. SpringMVC获取请求参数
+   1) 通过ServletAPI获取 (在使用SpringMVC时，能不用原生ServletAPI就不用)
+
+      @RequestMapping("/testServletAPI")
+      // 形参位置的request表示当前请求
+      public String testServletAPI(HttpServletRequest request) {
+        String uname = request.getParameter("username");
+        String password = request.getParameter("password");
+        System.out.println("uname = " + uname);
+        System.out.println("password = " + password);
+        return "success";
+      }
+
+   2) 通过控制器方法的形参获取请求参数 & @RequestParam()
+
+      @RequestMapping("/testParam")
+      public String testParam(
+          // 将请求参数和形参对应 value = "user_name" -> username = req.getParameter("user_name")
+          // required = true(默认) -> 设置是否必须传输此请求参数，如果必须传输但未接受到参数则报错 (400 parameter "user_name" is not present)
+          // defaultValue 默认值(没有传输或为空字符串时)，使用时代表required = false
+          @RequestParam(value = "user_name", required = true, defaultValue = "default username") String username,
+          Integer password,
+          String[] hobby) {
+        System.out.println("uname = " + username);
+        System.out.println("password = " + password);
+        // 若请求参数中出现多个同名的请求参数(ex.复选框)，可以在控制器方法的形参位置设置字符串或字符串数组接受此请求参数
+        // 若使用字符串类型的形参，最终结果为请求参数的每一个值之间使用逗号进行拼接
+        // hobby获取复选框数据，hobby数据类型为String -> a,b,c, hobby数据类型为String[] -> [a,b,c]
+        System.out.println("hobby = " + Arrays.toString(hobby));
+        return "success";
+      }
+
+   3) @RequestHeader()
+      // 从请求头中找到对应的参数赋值给形参
+      @RequestHeader(value = "Host", required = true, defaultValue = "default host") String host,
+
+   4) @CookieValue()
+      注意: session依赖于cookie，cookie是客户端会话技术，session是服务器端会话技术 (服务器通过cookie保存的JSESSIONID来确定客户端的session)
+      // 从Cookie中找到对应的参数赋值给形参
+      @CookieValue(value = "JSESSIONID", required = true, defaultValue = "default id")  String sessionID
+
