@@ -178,3 +178,48 @@
       // 从Cookie中找到对应的参数赋值给形参
       @CookieValue(value = "JSESSIONID", required = true, defaultValue = "default id")  String sessionID
 
+   5) 通过POJO获取请求参数
+      - 可以在控制器方法的形参位置设置一个实体类类型的形参，此时若浏览器传输的请求参数的参数名和实体类中的属性名一致，那么请求参数就会为此属性赋值
+
+        <form th:action="@{/hello/testBean}" method="post">
+          用户名:<input type="text" name="username"><br>
+          密码:<input type="password" name="password"><br>
+          性别:<input type="radio" name="sex" value="男">男
+               <input type="radio" name="sex" value="女">女<br>
+          年龄:<input type="text" name="age"><br>
+          邮箱:<input type="text" name="email"><br>
+          <input type="submit" value="使用实体类接受请求参数">
+        </form>
+
+        @RequestMapping("/testBean")
+        public String testBean(User user) {
+          System.out.println(user); // -> User{id=null, username='张三', password='123', age=23, sex='男', email='123@qq.com'}
+          return "success";
+        }
+
+   6) 解决获取请求参数的乱码问题 (CharacterEncodingFilter)
+
+      <!-- 配置编码过滤器 -->
+      <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <!-- 配置编码 -->
+        <init-param>
+          <param-name>encoding</param-name>
+          <param-value>UTF-8</param-value>
+        </init-param>
+        <!-- 设置请求编码 -->
+        <!-- 如果request.getCharacterEncoding() == null 则不需要设置forceRequestEncoding -->
+        <!-- 设置响应编码 -->
+        <init-param>
+          <param-name>forceResponseEncoding</param-name>
+          <param-value>true</param-value>
+        </init-param>
+      </filter>
+
+      <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>
+
+7. 域对象共享数据 (request.setAttribute())

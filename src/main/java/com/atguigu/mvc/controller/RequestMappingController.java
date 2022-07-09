@@ -1,5 +1,6 @@
 package com.atguigu.mvc.controller;
 
+import com.atguigu.mvc.bean.User;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -85,6 +86,12 @@ public class RequestMappingController {
     System.out.println("hobby = " + Arrays.toString(hobby));
     System.out.println("host = " + host);
     System.out.println("sessionID = " + sessionID);
+    return "success";
+  }
+
+  @RequestMapping("/testBean")
+  public String testBean(User user) {
+    System.out.println(user);
     return "success";
   }
 }
