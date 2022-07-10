@@ -222,4 +222,90 @@
         <url-pattern>/*</url-pattern>
       </filter-mapping>
 
-7. 域对象共享数据 (request.setAttribute())
+7. 域对象共享数据 (request, session, application)
+   1) 使用ServletAPI向request域对象共享数据
+
+      @RequestMapping("/testRequestByServletAPI")
+      public String testRequestByServletAPI(HttpServletRequest request) {
+        request.setAttribute("testRequestScope", "hello, ServletAPI");
+        return "success";
+      }
+
+   2) 使用ModelAndView向request域对象共享数据
+
+      @RequestMapping("/testModelAndView")
+      public ModelAndView testModelAndView() { // 注意ModelAndView要作为方法的返回值返回
+        ModelAndView modelAndView = new ModelAndView();
+        // 处理模型数据，即向请求域request共享数据
+        modelAndView.addObject("testRequestScope", "hello from ModelAndView");
+        // 设置视图名称
+        modelAndView.setViewName("success");
+        return modelAndView;
+      }
+
+   3) 使用Model向request域对象共享数据
+
+      @RequestMapping("/testModel")
+      public String testModel(Model model) {
+        model.addAttribute("testRequestScope", "hello from Model");
+        return "success";
+      }
+
+   4) 使用Map向request域对象共享数据
+
+      @RequestMapping("/testMap")
+      public String testMap(Map<String, Object> map) {
+        map.put("testRequestScope", "hello from Map");
+        return "success";
+      }
+
+   5) 使用ModelMap向request域对象共享数据
+
+      @RequestMapping("/testModelMap")
+      public String testModelMap(ModelMap modelMap) {
+        modelMap.addAttribute("testRequestScope", "hello from ModelMap");
+        return "success";
+      }
+
+   6) 注意: 本质上这里的Model，Map，和ModelMap类型的参数本质上都是 BindingAwareModelMap 类型的
+
+   7) 向session域共享数据
+
+      @RequestMapping("/testSession")
+      public String testSession(HttpSession session) {
+        session.setAttribute("testSessionScope", "hello from Session");
+        return "success";
+      }
+
+   8) 向application域共享数据
+
+      @RequestMapping("/testApplication")
+      public String testApplication(HttpSession session) {
+        ServletContext context = session.getServletContext();
+        context.setAttribute("testApplicationScope", "hello from Application");
+        return "success";
+      }
+
+8. SpringMVC的视图 (SpringMVC默认视图: 转发视图InternalResourceView 和 重定向视图RedirectView)
+   1) ThymeleafView
+      - 当控制器方法中所设置的视图名称没有任何前缀是，此时的视图名称会被SpringMVC配置文件中所配置的视图解析器解析，
+        视图名称拼接视图前缀和视图后缀所得到的最终路径，会通过转发的方式实现跳转
+
+        @RequestMapping("/testThymeleafView")
+        public String testThymeleafView() {
+          return "success";
+        }
+
+   2) 转发视图
+      - SpringMVC默认的转发视图是 InternalResourceView
+      - 当控制器方法中所设置的视图名称以"forward:"为前缀时，创建InternalResourceView视图，此时的视图名称不会被
+        SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀"forward:"去掉，剩余部分作为最终路径通过转发的方式
+        实现跳转
+      - 例如: "forward:/", "forward:/success"
+
+        @RequestMapping("/testForward")
+        public String testForward() {
+          return "forward:/testThymeleafView";
+        }
+
+   3) 重定向视图

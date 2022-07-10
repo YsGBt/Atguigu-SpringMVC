@@ -6,6 +6,7 @@
 </head>
 <body>
   <h1>首页</h1>
+  <!-- 测试请求路径 -->
   <a th:href="@{/target}">访问目标页面target.html</a><br>
   <a th:href="@{/hello/testRequestMapping}">测试RequestMapping注解的位置，访问目标页面success.html</a><br>
   <form th:action="@{/hello/test}" method="post">
@@ -21,6 +22,7 @@
   <a th:href="@{/hello/abc/testAnt}">测试@RequestMapping可以匹配ant风格的路径 -> 使用'**'</a><br>
   <a th:href="@{/hello/testPath/1}">测试@RequestMapping可以支持路径中的占位符</a><br>
   <br>
+
   <!-- 测试请求参数 -->
   <a th:href="@{/hello/testServletAPI(username='admin',password=123456)}">测试使用servletAPI获取请求参数</a><br>
   <a th:href="@{/hello/testParam(username='admin',password=123456)}">测试使用控制器的形参获取请求参数</a><br>
@@ -40,6 +42,19 @@
     年龄:<input type="text" name="age"><br>
     邮箱:<input type="text" name="email"><br>
     <input type="submit" value="使用实体类接受请求参数">
-  </form>
+  </form><br>
+
+  <!-- 域对象共享数据 -->
+  <a th:href="@{/testRequestByServletAPI}">通过ServletAPI向request域对象共享数据</a>
+  <a th:href="@{/testModelAndView}">通过ModelAndView向request域对象共享数据</a>
+  <a th:href="@{/testModel}">通过Model向request域对象共享数据</a>
+  <a th:href="@{/testMap}">通过Map向request域对象共享数据</a>
+  <a th:href="@{/testModelMap}">通过ModelMap向request域对象共享数据</a>
+  <a th:href="@{/testSession}">通过ServletAPI向session域对象共享数据</a>
+  <a th:href="@{/testApplication}">通过ServletAPI向application域对象共享数据</a>
+
+  <!-- 视图处理 -->
+  <a th:href="@{/testThymeleafView}">测试ThymeleafView</a>
+  <a th:href="@{/testForward}">测试InternalResourceView</a>
 </body>
 </html>
