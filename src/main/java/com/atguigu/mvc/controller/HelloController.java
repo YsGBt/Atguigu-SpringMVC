@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HelloController {
 
   // "/" -> /WEB-INF/templates/index.html
-  @RequestMapping(value = "/")
-  public String index() {
-    // 返回视图名称
-    return "index";
-  }
+//  @RequestMapping(value = "/")
+//  public String index() {
+//    // 返回视图名称
+//    return "index";
+//  }
 
   @RequestMapping(value = "/target")
   public String helloWorld() {

@@ -309,3 +309,24 @@
         }
 
    3) 重定向视图
+      - SpringMVC默认的重定向视图是 RedirectView
+      - 当控制器方法中所设置的视图名称以"redirect:"为前缀时，创建RedirectView视图，此时的视图名称不会被
+         SpringMVC配置文件中所配置的视图解析器解析，而是会将前缀"redirect:"去掉，剩余部分作为最终路径通过重定向的方式
+         实现跳转
+      - 例如: "redirect:/", "redirect:/success"
+
+        @RequestMapping("/testRedirect")
+        public String testRedirect() {
+          return "redirect:/testThymeleafView";
+        }
+
+   4) 视图控制器 view-controller
+      - 当控制器方法中，仅仅用来实现页面跳转，即只需要设置视图名称时，可以将处理器方法使用view- controller标签进行表示
+        <!--
+          path:设置处理的请求地址
+          view-name:设置请求地址所对应的视图名称
+        -->
+        <mvc:view-controller path="/" view-name="index"></mvc:view-controller>
+
+        <!-- 开启MVC的注解驱动 -->
+        <mvc:annotation-driven></mvc:annotation-driven>
