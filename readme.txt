@@ -131,9 +131,9 @@
    - rest方式： /deleteUser/1
 
      @RequestMapping("/testPath/{id}/{username}")
-     public String testPath(@PathVariable("id") Integer id, @PathVariable("username") String username) {
+     public String testPath(@PathVariable("id") Integer id, @PathVariable("username") String userName) {
        System.out.println("id = " + id);
-       System.out.println("username = " + username);
+       System.out.println("username = " + userName);
        return "success";
      }
 
@@ -330,3 +330,35 @@
 
         <!-- 开启MVC的注解驱动 -->
         <mvc:annotation-driven></mvc:annotation-driven>
+
+9. RESTFul (Representational State Transfer 表现层资源状态转移)
+   1) RESTFul的实现
+      - Get 获取
+      - Post 添加
+      - Put 更新
+      - Delete 删除
+      - URL地址从前到后各个单词使用斜线分开，不使用问号键值对方式携带请求参数，而是将要发送给服务器的数据作为url地址
+        的一部分:
+        getUserById?id=1 ---更改为---> user/1
+
+   2) HiddenHttpMethodFilter
+      - 由于网页只能发送get和post请求所以需要使用HiddenHttpMethodFilter来对请求进行包装
+
+        <!-- 配置HiddenHttpMethodFilter 注意要放到编码过滤器之后执行 因为HiddenHttpMethodFilter调用了getParameter() -->
+        <filter>
+          <filter-name>HiddenHttpMethodFilter</filter-name>
+          <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+        </filter>
+
+        <filter-mapping>
+          <filter-name>HiddenHttpMethodFilter</filter-name>
+          <url-pattern>/*</url-pattern>
+        </filter-mapping>
+
+      - 在html中需要使用post请求并添加_method隐藏域来确定实际请求方式:
+        <form th:action="@{/user}" method="post">
+            <input type="hidden" name="_method" value="PUT">
+            用户名: <input type="text" name="username"><br>
+            密码: <input type="password" name="password"><br>
+            <input type="submit" value="修改">
+          </form>

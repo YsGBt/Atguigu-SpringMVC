@@ -39,7 +39,7 @@
     path:设置处理的请求地址
     view-name:设置请求地址所对应的视图名称
   -->
-  <mvc:view-controller path="/" view-name="/WEB-INF/index.jsp"></mvc:view-controller>
+  <mvc:view-controller path="/jsp" view-name="/WEB-INF/index.jsp"></mvc:view-controller>
 
   <!-- 开启MVC的注解驱动 -->
   <mvc:annotation-driven></mvc:annotation-driven>
