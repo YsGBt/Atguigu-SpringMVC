@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Employee</title>
+</head>
+<body>
+  <form th:action="@{/restful/employee}" method="post">
+    <input type="hidden" name="_method" value="PUT">
+    <input type="hidden" name="id" th:value="${employee.id}">
+    LastName: <input type="text" name="lastName" th:value="${employee.lastName}"><br>
+    Email: <input type="email" name="email" th:value="${employee.email}"><br>
+    Gender: <input type="radio" name="gender" value="0" th:field="${employee.gender}">female
+    <input type="radio" name="gender" value="1" th:field="${employee.gender}">male<br>
+    <input type="submit" value="修改用户">
+  </form>
+</body>
+</html>

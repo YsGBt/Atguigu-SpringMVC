@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Employee Info</title>
+  <link rel="stylesheet" th:href="@{/static/css/employee_list.css}">
+  <script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
+  <script type="text/javascript">
+    // window.onload prevent script execute before the target dom element is loaded
+    window.onload = function () {
+      let vue = new Vue({
+        el: "#employee",
+        methods: {
+          deleteEmployee: function(event) {
+            // 根据id获取表单元素
+            let deleteForm = document.getElementById("deleteForm");
+            // 触发点击事件的超链接href属性赋值给表单的action
+            deleteForm.action = event.target.href;
+            // 提交表单
+            deleteForm.submit();
+            // 取消超链接默认行为: 点击后阻止跳转，优先执行提交表单
+            event.preventDefault();
+          }
+        }
+      })
+    }
+  </script>
+</head>
+<body>
+  <table id="employee">
+    <tr>
+      <th colspan="6">Employee Info</th>
+    </tr>
+    <tr>
+      <th>ID</th>
+      <th>LastName</th>
+      <th>Email</th>
+      <th>Gender</th>
+      <th colspan="2">Options (<a th:href="@{/restful/toAdd}">add</a>)</th>
+    </tr>
+    <tr th:each="employee : ${employeeList}">
+      <td th:text="${employee.id}"></td>
+      <td th:text="${employee.lastName}"></td>
+      <td th:text="${employee.email}"></td>
+      <td th:text="${employee.gender}"></td>
+      <td>
+        <a @click="deleteEmployee" th:href="@{|/restful/employee/${employee.id}|}">Delete</a>
+      </td>
+      <td>
+        <a th:href="@{|/restful/employee/${employee.id}|}">Update</a>
+      </td>
+    </tr>
+  </table>
+
+  <form id="deleteForm" method="post">
+    <input type="hidden" name="_method", value="DELETE">
+  </form>
+</body>
+</html>

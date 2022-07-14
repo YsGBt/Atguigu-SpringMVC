@@ -362,3 +362,8 @@
             密码: <input type="password" name="password"><br>
             <input type="submit" value="修改">
           </form>
+
+   3) 开放对静态资源的访问
+      - 首先DispatcherServlet处理，如果DispatcherServlet无法找到资源则交给Servlet处理
+
+      <mvc:default-servlet-handler></mvc:default-servlet-handler>

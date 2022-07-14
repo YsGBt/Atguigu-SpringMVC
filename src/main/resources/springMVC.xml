@@ -40,6 +40,10 @@
     view-name:设置请求地址所对应的视图名称
   -->
   <mvc:view-controller path="/jsp" view-name="/WEB-INF/index.jsp"></mvc:view-controller>
+  <mvc:view-controller path="/restful/toAdd" view-name="employee_add"></mvc:view-controller>
+
+  <!-- 开放对静态资源的访问 -->
+  <mvc:default-servlet-handler></mvc:default-servlet-handler>
 
   <!-- 开启MVC的注解驱动 -->
   <mvc:annotation-driven></mvc:annotation-driven>
