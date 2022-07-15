@@ -364,6 +364,63 @@
           </form>
 
    3) 开放对静态资源的访问
-      - 首先DispatcherServlet处理，如果DispatcherServlet无法找到资源则交给Servlet处理
+      - 首先DispatcherServlet处理，如果DispatcherServlet无法找到资源则交给
+        DefaultServletHttpRequestHandler (然后通过调用DefaultServlet)处理
+        <mvc:default-servlet-handler></mvc:default-servlet-handler>
 
-      <mvc:default-servlet-handler></mvc:default-servlet-handler>
+10. HttpMessageConverter 报文信息转换器
+    - 将请求报文转换成Java对象，或将Java对象转换成响应报文
+    - @RequestBody RequestEntity
+    - @ResponseBody ResponseEntity
+
+    1) @RequestBody
+       - 可以获取请求体，需要在控制器方法中设置形参，使用@RequestBody进行表示，当前请求的请求体就会为当前注解所标识
+         的形参赋值
+
+         @RequestMapping("/testRequestBody")
+           public String testRequestBody(@RequestBody String requestBody) {
+             System.out.println("requestBody = " + requestBody); // -> requestBody = username=admin&password=123456
+             return "success";
+           }
+
+    2) RequestEntity
+
+       @RequestMapping("/testRequestEntity")
+         public String testRequestEntity(RequestEntity<String> requestEntity) {
+           // 当前requestEntity表示整个请求报文的信息
+           System.out.println("请求头 = " + requestEntity.getHeaders());
+           System.out.println("请求体 = " + requestEntity.getBody());
+           return "success";
+         }
+
+       --> 请求头 = [host:"localhost:8080", connection:"keep-alive", content-length:"27", cache-control:"max-age=0", ... ]
+       --> 请求体 = username=admin&password=123456
+
+    3) @ResponseBody
+
+       @RequestMapping("/testResponseBody")
+       @ResponseBody
+       public String testResponseBody() {
+         return "hello, response"; // -> response.getWriter().print("hello, response");
+       }
+
+    4) SpringMVC处理json
+       a. 导入jackson的依赖
+       b. 在SpringMVC的核心配置文件中开启mvc的注解驱动，此时在HandlerAdaptor中会自动装配一个消息转换器:
+          MappingJackson2HttpMessageConverter，可以将响应到浏览器的Java对象转换为json格式的字符串
+          <mvc:annotation-driven />
+       c. 在处理器方法上使用@ResponseBody注解进行标识
+       d. 将Java对象直接作为控制器方法的返回值返回，就会自动转换为json格式的字符串
+
+          @RequestMapping("/testResponseUser")
+          @ResponseBody
+          public User testResponseUser() {
+            return new User(1001, "admin", "123456", 23, "男", "abc@gmail.com");
+          }
+
+          --> 浏览器的页面中展示的结果:
+          {"id":1001,"username":"admin","password":"123456","age":23,"sex":"男","email":"abc@gmail.com"}
+
+
+
+
