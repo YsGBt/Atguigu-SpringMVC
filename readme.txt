@@ -421,6 +421,119 @@
           --> 浏览器的页面中展示的结果:
           {"id":1001,"username":"admin","password":"123456","age":23,"sex":"男","email":"abc@gmail.com"}
 
+    5) SpringMVC处理ajax
+
+       window.onload = function () {
+         let vue = new Vue({
+           el:"#app",
+           methods: {
+             testAxios:function (event) {
+               axios({
+                 method:"post",
+                 url:event.target.href,
+                 params: {
+                   username:"admin",
+                   password:123456
+                 }
+               }).then(function (response) {
+                 alert(response.data);
+               }).catch();
+               event.preventDefault();
+             }
+           }
+         })
+       }
+       <div id="app">
+         <a th:href="@{/http/testAxios}" @click="testAxios">SpringMCV处理ajax</a>
+       </div>
+
+       @RequestMapping("/testAxios")
+       @ResponseBody
+       public String testAxios(String username, Integer password) {
+         System.out.println(username + ", " + password);
+         return "hello, axios";
+       }
+
+    6) @RestController 注解
+       - @RestController注解是SpringMVC提供的一个复合注解，标识在控制器的类上，就相当于为类添加了@Controller注解，
+         并且为其中的所有方法添加了@ResponseBody注解
+
+    7) ResponseEntity
+       - ResponseEntity用于控制器方法的返回值类型，该控制器方法的返回值就是响应到浏览器的响应报文
+
+11. 文件上传和下载
+    1) 文件下载
+       @RequestMapping("/testDownload")
+       public ResponseEntity<byte[]> testResponseEntity(HttpSession session) throws
+           IOException {
+         // 获取ServletContext对象
+         ServletContext servletContext = session.getServletContext();
+         // 获取服务器中文件的真实路径
+         String realPath = servletContext.getRealPath("/static/img/1.jpeg");
+         // 创建输入流
+         InputStream is = new FileInputStream(realPath);
+         // 创建字节数组
+         byte[] bytes = new byte[is.available()];
+         // 将流读到字节数组中
+         is.read(bytes);
+         // 创建HttpHeaders对象设置响应头信息
+         MultiValueMap<String, String> headers = new HttpHeaders();
+         // 设置要下载方式以及下载文件的名字
+         headers.add("Content-Disposition", "attachment;filename=1.jpeg");
+         // 设置响应状态码
+         HttpStatus statusCode = HttpStatus.OK;
+         // 创建ResponseEntity对象
+         ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(bytes, headers,
+             statusCode);
+         // 关闭输入流
+         is.close();
+         return responseEntity;
+       }
+
+    2) 文件上传
+       a. 文件上传要求form表单的请求方式必须为post，并且添加属性enctype="multipart/form-data"
+
+       b. 添加依赖
+          <!-- https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload -->
+          <dependency>
+              <groupId>commons-fileupload</groupId>
+              <artifactId>commons-fileupload</artifactId>
+              <version>1.3.1</version>
+          </dependency>
+
+       c. 在SpringMVC的配置文件中添加配置
+          <!-- 配置文件上传解析器，将上传的文件封装为MultipartFile -->
+          <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+          </bean>
+
+       d. SpringMVC中将上传的文件封装到MultipartFile对象中，通过此对象可以获取文件相关信息
+          - 有关路径: https://blog.csdn.net/freelk/article/details/79280021
+
+    3)  解决文件重名问题
+        @RequestMapping("/testUpload")
+        public String testUpload(MultipartFile photo, HttpSession session) throws IOException {
+          // 获取上传文件的文件名
+          String filename = photo.getOriginalFilename();
+          // 获取上传文件的后缀名
+          String suffix = filename.substring(filename.lastIndexOf("."));
+          // 将UUID作为文件名
+          String uuid = UUID.randomUUID().toString();
+          // 将uuid和文件后缀名拼接后的结果作为最终的文件名
+          filename = uuid + suffix;
+          // 通过ServletContext获取服务器中photo目录的路径
+          ServletContext servletContext = session.getServletContext();
+          String photoPath = servletContext.getRealPath("/photo");
+          File file = new File(photoPath);
+          // 判断photoPath所对应路径是否存在
+          if (!file.exists()) {
+            // 若不存在，则创建目录
+            file.mkdir();
+          }
+          String finalPath = photoPath + File.separator + filename;
+          photo.transferTo(new File(finalPath));
+          return "success";
+        }
+
 
 
 

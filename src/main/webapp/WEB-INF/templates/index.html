@@ -3,6 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <title>首页</title>
+  <script type="text/javascript" th:src="@{/static/js/vue.js}"></script>
+  <script type="text/javascript" th:src="@{/static/js/axios.min.js}"></script>
+  <script type="text/javascript">
+    window.onload = function () {
+      let vue = new Vue({
+        el:"#app",
+        methods: {
+          testAxios:function (event) {
+            axios({
+              method:"post",
+              url:event.target.href,
+              params: {
+                username:"admin",
+                password:123456
+              }
+            }).then(function (response) {
+              alert(response.data);
+            }).catch();
+            event.preventDefault();
+          }
+        }
+      })
+    }
+  </script>
 </head>
 <body>
   <h1>首页</h1>
@@ -90,7 +114,16 @@
   <a th:href="@{/http/testResponse}">通过ServletAPI的response对象响应浏览器数据</a><br>
   <a th:href="@{/http/testResponseBody}">通过@ResponseBody响应浏览器数据</a><br>
   <a th:href="@{/http/testResponseUser}">通过@ResponseBody响应浏览器User对象</a><br>
+  <div id="app">
+    <a th:href="@{/http/testAxios}" @click="testAxios">SpringMCV处理ajax</a>
+  </div><br><br>
 
-
+  <!-- 文件上传和下载 -->
+  <a th:href="@{/file/testDownload}">下载1.jpeg</a>
+  <!-- enctype="multipart/form-data" 指 多端数据并以二进制的形式传输 -->
+  <form th:action="@{/file/testUpload}" method="post" enctype="multipart/form-data">
+    头像: <input type="file" name="photo"><br>
+    <input type="submit" value="上传">
+  </form><br>
 </body>
 </html>
