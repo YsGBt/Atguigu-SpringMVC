@@ -46,11 +46,34 @@
   <mvc:default-servlet-handler></mvc:default-servlet-handler>
 
   <!-- 开启MVC的注解驱动 -->
-  <mvc:annotation-driven></mvc:annotation-driven>
+  <mvc:annotation-driven>
+    <mvc:message-converters>
+      <!-- 处理响应中文内容乱码 -->
+      <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+        <property name="defaultCharset" value="UTF-8" />
+        <property name="supportedMediaTypes">
+          <list>
+            <value>text/html</value>
+            <value>application/json</value>
+          </list>
+        </property>
+      </bean>
+    </mvc:message-converters>
+  </mvc:annotation-driven>
 
   <!-- 配置文件上传解析器，将上传的文件封装为MultipartFile -->
   <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
   </bean>
 
-
+  <!-- 配置拦截器 -->
+  <mvc:interceptors>
+    <!-- 方法一: <bean class="com.atguigu.mvc.interceptor.FirstInterceptor"></bean> -->
+    <!-- 方法二(要在FirstInterceptor上添加注解@Component): <ref bean="firstInterceptor"></ref> -->
+    <!-- 方法三: 可以指定拦截规则 -->
+    <mvc:interceptor>
+      <mvc:mapping path="/*"/> <!-- 这里 /* 指的是指匹配一层目录的请求 例如 /a, /b 等，拦截所有则需要使用 /** -->
+      <mvc:exclude-mapping path="/"/> <!-- 这里 / 指仅排除/请求 -->
+      <ref bean="firstInterceptor"></ref>
+    </mvc:interceptor>
+  </mvc:interceptors>
 </beans>

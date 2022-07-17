@@ -534,6 +534,53 @@
           return "success";
         }
 
+12. Interceptor 拦截器
+    1) 拦截器中的三个方法 (handler == controller)：
+       a. preHandle: 控制器方法执行之前执行preHandle()，其boolean类型的返回值表示是否拦截或放行，返回true为放行，
+          即调用控制器方法;返回false表示拦截，即不调用控制器方法
+       b. postHandle: 控制器方法执行之后执行postHandle()
+       c. afterCompletion: 处理完视图和模型数据，渲染视图完毕之后执行afterCompletion()
+
+    2) 配置拦截器
+       a. SpringMVC中的拦截器需要实现HandlerInterceptor
+
+          public class FirstInterceptor implements HandlerInterceptor {
+
+            @Override
+            public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+                throws Exception {
+              System.out.println("FirstInterceptor --> preHandle");
+              return true;
+            }
+
+            @Override
+            public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+                ModelAndView modelAndView) throws Exception {
+              System.out.println("FirstInterceptor --> postHandle");
+            }
+
+            @Override
+            public void afterCompletion(HttpServletRequest request, HttpServletResponse response,
+                Object handler, Exception ex) throws Exception {
+              System.out.println("FirstInterceptor --> afterCompletion");
+            }
+          }
+
+       b. SpringMVC的拦截器必须在SpringMVC的配置文件中进行配置 (方法一和方法二都是对DispatcherServlet所处理的所有请求进行拦截)
+
+          <mvc:interceptors>
+              <!-- 方法一: <bean class="com.atguigu.mvc.interceptor.FirstInterceptor"></bean> -->
+              <!-- 方法二(要在FirstInterceptor上添加注解@Component): <ref bean="firstInterceptor"></ref> -->
+              <!-- 方法三: 可以指定拦截规则 -->
+              <mvc:interceptor>
+                <mvc:mapping path="/*"/> <!-- 这里 /* 指的是指匹配一层目录的请求 例如 /a, /b 等，拦截所有则需要使用 /** -->
+                <mvc:exclude-mapping path="/"/> <!-- 这里 / 指仅排除/请求 -->
+                <ref bean="firstInterceptor"></ref>
+              </mvc:interceptor>
+            </mvc:interceptors>
+
+    3)
+
 
 
 
