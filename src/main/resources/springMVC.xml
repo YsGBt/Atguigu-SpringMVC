@@ -67,13 +67,34 @@
 
   <!-- 配置拦截器 -->
   <mvc:interceptors>
+    <ref bean="firstInterceptor"></ref>
+    <ref bean="secondInterceptor"></ref>
     <!-- 方法一: <bean class="com.atguigu.mvc.interceptor.FirstInterceptor"></bean> -->
     <!-- 方法二(要在FirstInterceptor上添加注解@Component): <ref bean="firstInterceptor"></ref> -->
     <!-- 方法三: 可以指定拦截规则 -->
-    <mvc:interceptor>
-      <mvc:mapping path="/*"/> <!-- 这里 /* 指的是指匹配一层目录的请求 例如 /a, /b 等，拦截所有则需要使用 /** -->
-      <mvc:exclude-mapping path="/"/> <!-- 这里 / 指仅排除/请求 -->
-      <ref bean="firstInterceptor"></ref>
-    </mvc:interceptor>
+<!--    <mvc:interceptor>-->
+<!--      <mvc:mapping path="/*"/> &lt;!&ndash; 这里 /* 指的是指匹配一层目录的请求 例如 /a, /b 等，拦截所有则需要使用 /** &ndash;&gt;-->
+<!--      <mvc:exclude-mapping path="/"/> &lt;!&ndash; 这里 / 指仅排除/请求 &ndash;&gt;-->
+<!--      <ref bean="firstInterceptor"></ref>-->
+<!--    </mvc:interceptor>-->
+
   </mvc:interceptors>
+
+  <!-- 配置异常处理 -->
+<!--  <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">-->
+
+<!--    <property name="exceptionMappings">-->
+<!--      <props>-->
+<!--        &lt;!&ndash;-->
+<!--          properties的键表示处理器方法执行过程中出现的异常-->
+<!--          properties的值表示若出现指定异常时，设置一个新的视图名称，跳转到指定页面-->
+<!--        &ndash;&gt;-->
+<!--        &lt;!&ndash; 这里value('error')遵循SpringMVC规则，即不设定前缀(forward:, redirect:)的话，会被设定的viewResolver解析 &ndash;&gt;-->
+<!--        <prop key="java.lang.ArithmeticException">error</prop>-->
+<!--      </props>-->
+<!--    </property>-->
+<!--    &lt;!&ndash; exceptionAttribute属性设置一个属性名('ex')，将出现的异常信息在请求域中(request.setAttribute())进行共享 &ndash;&gt;-->
+<!--    <property name="exceptionAttribute" value="ex"></property>-->
+<!--  </bean>-->
+
 </beans>
